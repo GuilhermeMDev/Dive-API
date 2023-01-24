@@ -1,0 +1,44 @@
+version: '3.7'
+
+# Networks
+networks:
+    # Internal network
+    internal:
+        driver: bridge
+
+volumes:
+    docker-php-mysql_data:
+        driver: local
+
+# Services
+services:
+
+    # Nginx
+    docker-php-nginx:
+        image: webdevops/php-nginx-dev:8.1
+        container_name: docker-php-nginx
+        networks:
+            - internal
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
+        ports:
+            - "8080:80"
+        environment:
+            - WEB_DOCUMENT_ROOT=/var/www/public
+            - WEB_DOCUMENT_INDEX=index.php
+
+    docker-php-mysql:
+        image: mysql:5.7
+        container_name: docker-php-mysql
+        networks:
+            - internal
+        volumes:
+            - docker-php-mysql_data:/var/lib/mysql
+        environment:
+            - MYSQL_DATABASE=database
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+        ports:
+            - "3306:3306"
