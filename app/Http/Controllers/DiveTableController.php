@@ -63,7 +63,7 @@ class DiveTableController extends Controller
      * @param int $table
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function show(Request $request)
+    public function show(Request $request, $table)
     {
         dd($request->query->get('depth'));
     }
