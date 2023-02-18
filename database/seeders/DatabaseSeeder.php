@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(DataDiveSeeder::class);
+        $this->call([
+            DataDiveSeeder::class,
+            DataDiveIntervalSeeder::class
+            ]);
 
     }
 }

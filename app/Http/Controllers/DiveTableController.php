@@ -12,6 +12,9 @@ class DiveTableController extends Controller
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
+
+
+    //list all data about no stop limit in each depth to commercial dive.
     public function index(Request $request) //Lista todas as tabelas, e se informar o parametro depth na URL ex: /api/tive-table-letter/?depth=11 retorna só o perfil do mergulho da profundidade consultada.
     {
         if ((int)$request->query->get('depth')) {
@@ -24,6 +27,7 @@ class DiveTableController extends Controller
         return DataDive::all();
     }
 
+    //consult main dive table, and get repetitive group through depth reported.
     public function repetitiveGroup(Request $request)
     {
         //Encontrando a tabela com base na profundidade informada
@@ -35,14 +39,21 @@ class DiveTableController extends Controller
         $depthTime = (int)$request->query->get('depthTime');
 
         //Após identificar a tabela através da profundidade, comparo o tempo de fundo para obter o Grupo Repetitivo
-        foreach ($repetitiveLetter as $letter){
+        foreach ($repetitiveLetter as $letter) {
 
-            if ($depthTime >= $letter['minTime'] && $depthTime <= $letter['maxTime']){
+            if ($depthTime >= $letter['minTime'] && $depthTime <= $letter['maxTime']) {
                 return $letter['groupLetter'];
             };
 
 
         }
+    }
+
+    //Residual Nitrogen Time Table for Repetitive Air Dives.
+    public function surfaceInterval(Request $request)
+    {
+
+
     }
 
 
