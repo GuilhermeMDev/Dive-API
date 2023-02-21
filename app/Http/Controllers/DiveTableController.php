@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataDive;
+use App\Models\DataDiveInterval;
 use Illuminate\Http\Request;
 
 class DiveTableController extends Controller
@@ -15,7 +16,7 @@ class DiveTableController extends Controller
 
 
     //list all data about no stop limit in each depth to commercial dive.
-    public function index(Request $request) //Lista todas as tabelas, e se informar o parametro depth na URL ex: /api/tive-table-letter/?depth=11 retorna só o perfil do mergulho da profundidade consultada.
+    public function index(Request $request) //Lista todas as tabelas, e se informar o parametro depth na URL Ewx: /api/tive-table-letter/?depth=11 retorna só o perfil do mergulho da profundidade consultada.
     {
         if ((int)$request->query->get('depth')) {
             return DataDive::query()
@@ -35,7 +36,7 @@ class DiveTableController extends Controller
             ->where('maxfsw', '>=', (int)$request->query->get('depth'))
             ->first()->getAttribute('values');
 
-        //Aqui chega um inteiro, profundidade informada pelo client
+        //Aqui chega um inteiro, profundidade informada pelo usuário
         $depthTime = (int)$request->query->get('depthTime');
 
         //Após identificar a tabela através da profundidade, comparo o tempo de fundo para obter o Grupo Repetitivo
@@ -50,10 +51,17 @@ class DiveTableController extends Controller
     }
 
     //Residual Nitrogen Time Table for Repetitive Air Dives.
-    public function surfaceInterval(Request $request)
+    public function surfaceInterval(Request $request) //here i need get equivalent letter across surface interval after last dive.
     {
+        $lastGroupRepetitive = (string)$request->query->get('lastLetter');
+        $surfaceIntervalTime = (int)$request->query->get('intervalTime');
 
+        $initialGroup =  DataDiveInterval::query()
+            ->where('groupLetter', '=', $lastGroupRepetitive)
+            ->where('maxTime', '>=', $surfaceIntervalTime) //focus to get first resulf of consult, because we have others values with same letter.
+            ->first();
 
+        return $initialGroup["repetLetter"];
     }
 
 
