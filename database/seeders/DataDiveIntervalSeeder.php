@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\DataDive;
 use App\Models\DataDiveInterval;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

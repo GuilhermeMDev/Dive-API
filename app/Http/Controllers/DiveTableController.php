@@ -39,14 +39,12 @@ class DiveTableController extends Controller
         //Aqui chega um inteiro, profundidade informada pelo usuário
         $depthTime = (int)$request->query->get('depthTime');
 
-        //Após identificar a tabela através da profundidade, comparo o tempo de fundo para obter o Grupo Repetitivo
+        //After identify table cross depth, compare depth time and get Repetitive Group.
         foreach ($repetitiveLetter as $letter) {
 
             if ($depthTime >= $letter['minTime'] && $depthTime <= $letter['maxTime']) {
                 return $letter['groupLetter'];
             };
-
-
         }
     }
 

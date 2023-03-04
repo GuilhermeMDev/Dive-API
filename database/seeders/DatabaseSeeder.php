@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DataDiveSeeder::class,
-            DataDiveIntervalSeeder::class
+            DataDiveIntervalSeeder::class,
+            DataDiveResidualNitrogenSeeder::class,
             ]);
 
     }
