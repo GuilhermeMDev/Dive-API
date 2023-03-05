@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\DataDive;
 use App\Models\DataDiveInterval;
+use App\Models\DataDiveResidualNitrogen;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class DiveTableController extends Controller
@@ -11,16 +14,17 @@ class DiveTableController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
+     * @return Builder|Model|object
      */
 
-
     //list all data about no stop limit in each depth to commercial dive.
-    public function index(Request $request) //Lista todas as tabelas, e se informar o parametro depth na URL Ewx: /api/tive-table-letter/?depth=11 retorna só o perfil do mergulho da profundidade consultada.
+    public function index(Request $request)
     {
-        if ((int)$request->query->get('depth')) {
+        //It lists all the tables, and the depth parameter is informed in the URL
+        //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
+        if ((int)$request->query->get('depth')) { //depth in feet
             return DataDive::query()
-                ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast -> forçando um tipo
+                ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
                 ->orderBy('maxfsw')
                 ->first();
         }
@@ -31,12 +35,12 @@ class DiveTableController extends Controller
     //consult main dive table, and get repetitive group through depth reported.
     public function repetitiveGroup(Request $request)
     {
-        //Encontrando a tabela com base na profundidade informada
+        //Finding the table based on the given depth
         $repetitiveLetter = DataDive::query()
-            ->where('maxfsw', '>=', (int)$request->query->get('depth'))
+            ->where('maxfsw', '>=', (int)$request->query->get('depth')) //feet
             ->first()->getAttribute('values');
 
-        //Aqui chega um inteiro, profundidade informada pelo usuário
+        //depth given by request
         $depthTime = (int)$request->query->get('depthTime');
 
         //After identify table cross depth, compare depth time and get Repetitive Group.
@@ -46,6 +50,7 @@ class DiveTableController extends Controller
                 return $letter['groupLetter'];
             };
         }
+        return $letter['groupLetter'];
     }
 
     //Residual Nitrogen Time Table for Repetitive Air Dives.
@@ -53,6 +58,7 @@ class DiveTableController extends Controller
     {
         $lastGroupRepetitive = (string)$request->query->get('lastLetter');
         $surfaceIntervalTime = (int)$request->query->get('intervalTime');
+
 
         $initialGroup =  DataDiveInterval::query()
             ->where('groupLetter', '=', $lastGroupRepetitive)
@@ -62,54 +68,25 @@ class DiveTableController extends Controller
         return $initialGroup["repetLetter"];
     }
 
+    //Function responsible for returning the residual nitrogen value to calculate a successive dive
+    public function calculateSuccessiveDive(Request $request){
+        $repetitiveGroupAfterSurfaceInterval = (string)$request->query->get('endGroup');
+        $successiveDepth = (int)$request->query->get('successiveDepth'); //feet
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        //Accessing residual nitrogen data equivalent to dive depth in the table
+        $successiveDiveWithResidualNitrogen = DataDiveResidualNitrogen::query()
+            ->where('repetLetter', '=', $repetitiveGroupAfterSurfaceInterval)
+            ->first()->getAttribute('residualNitrogenTime');
+
+        foreach ($successiveDiveWithResidualNitrogen as $residualNitrogen)
+        {
+            if ($successiveDepth >= $residualNitrogen['minDepth'] && $successiveDepth <= $residualNitrogen['maxDepth']) {
+                return $residualNitrogen['residualNitrogenTime'];
+            };
+        }
+        return $residualNitrogen['residualNitrogenTime'];
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $table
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function show(Request $request, $table)
-    {
-        dd($request->query->get('depth'));
-    }
 
-//        return \response()->json([
-//            'message' => 'Tabela não localizada no banco de dados'
-//        ], 404);
-//    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
