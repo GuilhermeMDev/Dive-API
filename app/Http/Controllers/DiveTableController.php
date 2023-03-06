@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataDive;
 use App\Models\DataDiveInterval;
 use App\Models\DataDiveResidualNitrogen;
+use http\Env\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -24,12 +25,14 @@ class DiveTableController extends Controller
         //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
         if ((int)$request->query->get('depth')) { //depth in feet
             return DataDive::query()
-                ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
-                ->orderBy('maxfsw')
-                ->first();
+                    ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
+                    ->orderBy('maxfsw')
+                    ->first();
         }
 
-        return DataDive::all();
+        return \response()->json([
+            DataDive::all()
+        ]);
     }
 
     //consult main dive table, and get repetitive group through depth reported.
@@ -47,10 +50,13 @@ class DiveTableController extends Controller
         foreach ($repetitiveLetter as $letter) {
 
             if ($depthTime >= $letter['minTime'] && $depthTime <= $letter['maxTime']) {
-                return $letter['groupLetter'];
+                return response()->json([
+                    "data" => $letter['groupLetter']
+                ]);
+
             };
         }
-        return $letter['groupLetter'];
+
     }
 
     //Residual Nitrogen Time Table for Repetitive Air Dives.
@@ -60,16 +66,19 @@ class DiveTableController extends Controller
         $surfaceIntervalTime = (int)$request->query->get('intervalTime');
 
 
-        $initialGroup =  DataDiveInterval::query()
+        $initialGroup = DataDiveInterval::query()
             ->where('groupLetter', '=', $lastGroupRepetitive)
             ->where('maxTime', '>=', $surfaceIntervalTime) //focus to get first resulf of consult, because we have others values with same letter.
             ->first();
 
-        return $initialGroup["repetLetter"];
+        return response()->json([
+            "data" => $initialGroup["repetLetter"],
+        ]);
     }
 
     //Function responsible for returning the residual nitrogen value to calculate a successive dive
-    public function calculateSuccessiveDive(Request $request){
+    public function calculateSuccessiveDive(Request $request)
+    {
         $repetitiveGroupAfterSurfaceInterval = (string)$request->query->get('endGroup');
         $successiveDepth = (int)$request->query->get('successiveDepth'); //feet
 
@@ -78,15 +87,16 @@ class DiveTableController extends Controller
             ->where('repetLetter', '=', $repetitiveGroupAfterSurfaceInterval)
             ->first()->getAttribute('residualNitrogenTime');
 
-        foreach ($successiveDiveWithResidualNitrogen as $residualNitrogen)
-        {
+        foreach ($successiveDiveWithResidualNitrogen as $residualNitrogen) {
             if ($successiveDepth >= $residualNitrogen['minDepth'] && $successiveDepth <= $residualNitrogen['maxDepth']) {
-                return $residualNitrogen['residualNitrogenTime'];
-            };
+                $residualNitrogenTime = $residualNitrogen['residualNitrogenTime'];
+            }
         }
-        return $residualNitrogen['residualNitrogenTime'];
-    }
 
+        return response()->json([
+            "data" => $residualNitrogenTime,
+        ]);
+    }
 
 
 }
