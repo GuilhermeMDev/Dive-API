@@ -21,18 +21,21 @@ class DiveTableController extends Controller
     //list all data about no stop limit in each depth to commercial dive.
     public function index(Request $request)
     {
+        return \response()->json([
+            DataDive::all()
+        ]);
+    }
+
+    public function noDescompressiveDive(Request $request){
+
         //It lists all the tables, and the depth parameter is informed in the URL
         //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
         if ((int)$request->query->get('depth')) { //depth in feet
             return DataDive::query()
-                    ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
-                    ->orderBy('maxfsw')
-                    ->first();
+                ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
+                ->orderBy('maxfsw')
+                ->first();
         }
-
-        return \response()->json([
-            DataDive::all()
-        ]);
     }
 
     //consult main dive table, and get repetitive group through depth reported.
