@@ -30,7 +30,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
-| `api_key` | `integer` | **Obrigatório**. Paramêtro deve ser do tipo inteiro e a unidade de medidada está em Pés(fsw)|
+| `depth=(int)` | `integer` | **Obrigatório**. Paramêtro deve ser do tipo inteiro e a unidade de medidada está em Pés(fsw)|
 
 #### Retorna o registro de profundidade específico da Tabela de Mergulho Não Descompressivo, com base nos Paramêtros passados na QueryString.
 
@@ -38,6 +38,25 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
   GET /api/dive-table-letter/?depth=(int)&depthTime=(int)
 ```
 
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `id`      | `integer` | **Obrigatório**. Informe a profundidade e tempo de fundo para obter o Grupo Repetitivo referente ao Nitrogênio Residual acumulado nos tecidos |
+| Parâmetro                          | Tipo      | Descrição                       |
+| :--------------------------------  | :------------------------------------------ |
+| `depth=(int)&depthTime=(int)`      | `integer` | **Obrigatório**. Informe a profundidade e tempo de fundo para obter o Grupo Repetitivo referente ao Nitrogênio Residual acumulado nos tecidos |
+
+#### Retorna o Grupo Repetitivo inicial para calcular um mergulho sucessivo dentro de um range de tempo.
+
+```http
+  GET /api/surface-interval/?lastLetter=(string)&intervalTime=(int)
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `lastLetter=(string)&intervalTime=(int)`      | `integer` | **Obrigatório**. Informando o Grupo Repetitivo Final, e o intervalo de superfície, retorna o Grupo Repetitivo relativo ao Tempo de Nitrogênio residual acumulado nos tecidos, para então programar um mergulho sucessivo ou não.
+
+#### Retorna o tempo de nitrogênio residual acumulado nos tecidos, obtido para subtrair do limite não descompressivo da profundidade alvo do mergulho sucessivo
+
+```http
+  GET /api/successive-dive/?endGroup=(string)&successiveDepth=(int)
+```
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `endGroup=(string)&successiveDepth=(int)`      | `integer/string` | **Obrigatório**. Após cumprir o intervalo de superfície e obtido o Grupo Repetitivo final, informe a profundidade em pés(fsw) para o mergulho sucessivo e obtenha o valor de nitrogênio residual nos tecidos para então subtrair do tempo total não descompressivo da profundidade alvo de retorno, obtendo o tempo total permitido para o mergulho sucessivo em planejamento.
