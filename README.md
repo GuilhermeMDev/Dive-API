@@ -38,8 +38,8 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
   GET /api/dive-table-letter/?depth=(int)&depthTime=(int)
 ```
 
-| Parâmetro                          | Tipo      | Descrição                       |
-| :--------------------------------  | :------------------------------------------ |
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
 | `depth=(int)&depthTime=(int)`      | `integer` | **Obrigatório**. Informe a profundidade e tempo de fundo para obter o Grupo Repetitivo referente ao Nitrogênio Residual acumulado nos tecidos |
 
 #### Retorna o Grupo Repetitivo inicial para calcular um mergulho sucessivo dentro de um range de tempo.
