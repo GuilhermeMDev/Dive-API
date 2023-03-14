@@ -19,23 +19,30 @@ class DiveTableController extends Controller
      */
 
     //list all data about no stop limit in each depth to commercial dive.
-    public function fullNoDescompressiveDiveTable(Request $request)
+    public function fullNoDescompressiveDiveTable()
     {
         return \response()->json([
             DataDive::all()
         ]);
     }
 
-    public function noDescompressiveDive(Request $request){
+    public function noDescompressiveDive(Request $request)
+    {
 
-        //It lists all the tables, and the depth parameter is informed in the URL
+        //"depth" parameter is informed in the URL its a depth chose to dive
         //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
-        if ((int)$request->query->get('depth')) { //depth in feet
-            return DataDive::query()
-                ->where('maxfsw', '>=', (int)$request->query->get('depth')) //type cast (int)
-                ->orderBy('maxfsw')
-                ->first();
-        }
+        $depth = (int)$request->query->get('depth');
+
+              $noLimitDescompressive = DataDive::query()
+                  ->where('maxfsw', '>=', $depth) //type cast (int)
+                  ->orderBy('maxfsw')
+                  ->first();
+
+        return response()->json([
+            "data" => $noLimitDescompressive,
+        ]);
+
+
     }
 
     //consult main dive table, and get repetitive group through depth reported.
@@ -98,7 +105,7 @@ class DiveTableController extends Controller
 
         return response()->json([
             "residualNitrogenTime" => $residualNitrogenTime,
-        ],206);
+        ], 206);
     }
 
 

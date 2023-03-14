@@ -23,7 +23,7 @@ class DiveTableControllerTest extends TestCase
     # php artisan test --filter=DiveTableControllerTest::test_no_descompressive_dive
     public function test_no_descompressive_dive(){
 
-        $diveTableList = $this->get('/api/no-descompressive-dive/',
+        $diveTableList = $this->getJson('/api/no-descompressive-dive/',
             ['depth' => 80]); #feets
 
         $diveTableList->assertHeader('Content-Type', 'application/json');
@@ -32,7 +32,7 @@ class DiveTableControllerTest extends TestCase
 
     # php artisan test --filter=DiveTableControllerTest::test_repetitive_group
     public function test_repetitive_group(){
-        $repetitiveGroup = $this->get('/api/repetitiveGroup/',
+        $repetitiveGroup = $this->getJson('/api/repetitiveGroup/',
             [
                 'depth' => 80, #feets (fsw)
                 'depthTime' => 22 #minutes
@@ -45,7 +45,7 @@ class DiveTableControllerTest extends TestCase
     # php artisan test --filter=DiveTableControllerTest::test_surface_interval
     public function test_surface_interval()
     {
-        $surfaceInterval = $this->get('/api/surface-interval/',
+        $surfaceInterval = $this->getJson('/api/surface-interval/',
             [
                 'lastLetter' => 'D', #Last repetitive Group, by first or last dive.
                 'intervalTime' => 120 #minutes
