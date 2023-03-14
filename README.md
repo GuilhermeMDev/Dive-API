@@ -35,7 +35,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna o registro de profundidade específico da Tabela de Mergulho Não Descompressivo, com base nos Paramêtros passados na QueryString.
 
 ```http
-  GET /api/dive-table-letter/?depth=(int)&depthTime=(int)
+  GET /api/repetitive-group/?depth=(int)&depthTime=(int)
 ```
 
 | Parâmetro   | Tipo       | Descrição                           |
