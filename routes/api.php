@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/dive-table', [DiveTableController::class, 'index']);
 Route::get('/no-descompressive-dive', [DiveTableController::class, 'noDescompressiveDive']);
-Route::get('/dive-table-letter', [DiveTableController::class, 'repetitiveGroup']);
+Route::get('/repetitive-group', [DiveTableController::class, 'repetitiveGroup']);
 Route::get('/surface-interval', [DiveTableController::class, 'surfaceInterval']);
 Route::get('/successive-dive', [DiveTableController::class, 'calculateSuccessiveDive']);
 
