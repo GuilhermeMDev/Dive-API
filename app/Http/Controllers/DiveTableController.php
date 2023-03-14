@@ -19,7 +19,7 @@ class DiveTableController extends Controller
      */
 
     //list all data about no stop limit in each depth to commercial dive.
-    public function index(Request $request)
+    public function fullNoDescompressiveDiveTable(Request $request)
     {
         return \response()->json([
             DataDive::all()
@@ -97,8 +97,8 @@ class DiveTableController extends Controller
         }
 
         return response()->json([
-            "data" => $residualNitrogenTime,
-        ]);
+            "residualNitrogenTime" => $residualNitrogenTime,
+        ],206);
     }
 
 
