@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\DataDive;
 use App\Models\DataDiveInterval;
 use App\Models\DataDiveResidualNitrogen;
+use App\Rules\checkDepth;
+use App\Rules\checkRepetitiveGroup;
 use http\Env\Response;
+use Illuminate\Http\Resources\Json\JsonResource;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -28,8 +32,11 @@ class DiveTableController extends Controller
 
     public function noDescompressiveDive(Request $request)
     {
+        $request->validate([
+            'depth' => ['required', new checkDepth(0,190)],
+        ]);
 
-        //"depth" parameter is informed in the URL its a depth chose to dive
+        //"depth" parameter is informed in the URL, and it`s depth chose to dive
         //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
         $depth = (int)$request->query->get('depth');
 
@@ -48,6 +55,11 @@ class DiveTableController extends Controller
     //consult main dive table, and get repetitive group through depth reported.
     public function repetitiveGroup(Request $request)
     {
+
+        $request->validate([
+            'depth' => ['required', new checkDepth(0,190)],
+        ]);
+
         //Finding the table based on the given depth
         $repetitiveLetter = DataDive::query()
             ->where('maxfsw', '>=', (int)$request->query->get('depth')) //feet
@@ -72,9 +84,13 @@ class DiveTableController extends Controller
     //Residual Nitrogen Time Table for Repetitive Air Dives.
     public function surfaceInterval(Request $request) //here i need get equivalent letter across surface interval after last dive.
     {
+
         $lastGroupRepetitive = (string)$request->query->get('lastLetter');
         $surfaceIntervalTime = (int)$request->query->get('intervalTime');
 
+        $request->validate([
+            'lastLetter' => ['required', new checkRepetitiveGroup()],
+        ]);
 
         $initialGroup = DataDiveInterval::query()
             ->where('groupLetter', '=', $lastGroupRepetitive)
@@ -89,8 +105,14 @@ class DiveTableController extends Controller
     //Function responsible for returning the residual nitrogen value to calculate a successive dive
     public function calculateSuccessiveDive(Request $request)
     {
+
+
         $repetitiveGroupAfterSurfaceInterval = (string)$request->query->get('endGroup');
-        $successiveDepth = (int)$request->query->get('successiveDepth'); //feet
+        $successiveDepth = (int)$request->query->get('successiveDepth'); //feets
+
+        $request->validate([
+            'endGroup' => ['required', new checkRepetitiveGroup()],
+        ]);
 
         //Accessing residual nitrogen data equivalent to dive depth in the table
         $successiveDiveWithResidualNitrogen = DataDiveResidualNitrogen::query()
