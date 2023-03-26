@@ -33,17 +33,17 @@ class DiveTableController extends Controller
     public function noDescompressiveDive(Request $request)
     {
         $request->validate([
-            'depth' => ['required', new checkDepth(0,190)],
+            'depth' => ['required', new checkDepth(0, 190)],
         ]);
 
         //"depth" parameter is informed in the URL, and it`s depth chose to dive
         //Ex: /api/tive-table-letter/?depth=11 returns only the dive profile of the consulted depth.
-        $depth = (int)$request->query->get('depth');
+        $depth = (int)$request->query->get('depth');//type cast (int)
 
-              $noLimitDescompressive = DataDive::query()
-                  ->where('maxfsw', '>=', $depth) //type cast (int)
-                  ->orderBy('maxfsw')
-                  ->first();
+        $noLimitDescompressive = DataDive::query()
+            ->where('maxfsw', '>=', $depth)
+            ->orderBy('maxfsw')
+            ->first();
 
         return response()->json([
             "data" => $noLimitDescompressive,
@@ -57,7 +57,7 @@ class DiveTableController extends Controller
     {
 
         $request->validate([
-            'depth' => ['required', new checkDepth(0,190)],
+            'depth' => ['required', new checkDepth(0, 190)],
         ]);
 
         //Finding the table based on the given depth
@@ -82,7 +82,7 @@ class DiveTableController extends Controller
     }
 
     //Residual Nitrogen Time Table for Repetitive Air Dives.
-    public function surfaceInterval(Request $request) //here i need get equivalent letter across surface interval after last dive.
+    public function surfaceInterval(Request $request) //here we need get equivalent letter across surface interval after last dive.
     {
 
         $lastGroupRepetitive = (string)$request->query->get('lastLetter');
@@ -94,7 +94,7 @@ class DiveTableController extends Controller
 
         $initialGroup = DataDiveInterval::query()
             ->where('groupLetter', '=', $lastGroupRepetitive)
-            ->where('maxTime', '>=', $surfaceIntervalTime) //focus to get first resulf of consult, because we have others values with same letter.
+            ->where('maxTime', '>=', $surfaceIntervalTime) //focus to get first result  of consult, because we have others values with same letter.
             ->first();
 
         return response()->json([

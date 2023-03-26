@@ -6,14 +6,17 @@ use App\Http\Controllers\DiveTableController;
 use App\Models\DataDive;
 use Illuminate\Http\Request;
 use Illuminate\Testing\TestResponse;
-use Tests\TestCase; //do próprio laravel.
+use Tests\TestCase;
+
+//do próprio laravel.
 
 # php artisan test --filter=DiveTableControllerTest
 class DiveTableControllerTest extends TestCase
 {
 
     # php artisan test --filter=DiveTableControllerTest::test_index
-    public function test_full_no_descompressive_dive_table(){
+    public function test_full_no_descompressive_dive_table()
+    {
         $noDescompressiveTable = $this->getJson('/api/dive-table');
 
         $noDescompressiveTable->assertHeader('Content-Type', 'application/json');
@@ -21,7 +24,8 @@ class DiveTableControllerTest extends TestCase
     }
 
     # php artisan test --filter=DiveTableControllerTest::test_no_descompressive_dive
-    public function test_no_descompressive_dive(){
+    public function test_no_descompressive_dive()
+    {
 
         $diveTableList = $this->getJson('/api/no-descompressive-dive/',
             ['depth' => 80]); #feets
@@ -31,7 +35,8 @@ class DiveTableControllerTest extends TestCase
     }
 
     # php artisan test --filter=DiveTableControllerTest::test_repetitive_group
-    public function test_repetitive_group(){
+    public function test_repetitive_group()
+    {
         $repetitiveGroup = $this->getJson('/api/repetitiveGroup/',
             [
                 'depth' => 80, #feets (fsw)
@@ -68,5 +73,13 @@ class DiveTableControllerTest extends TestCase
         $successiveDive->assertHeader('Content-Type', 'application/json');
         $this->assertIsObject($successiveDive, "The item must be a Object");
 
+    }
+
+    # php artisan test --filter=DiveTableControllerTest::test_last_repetitive_group
+    public function test_last_repetitive_group()
+    {
+        $depth = rand(0,190);
+        $response = $this->get("/api/no-descompressive-dive/?depth={$depth}");
+        $response->assertStatus(200);
     }
 }

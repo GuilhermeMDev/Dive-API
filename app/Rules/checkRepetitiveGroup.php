@@ -31,4 +31,6 @@ class checkRepetitiveGroup implements Rule
         return "The Repetitive Group not found on tables declared by UsNavy REV 7 (2016).";
     }
 
+
+
 }
