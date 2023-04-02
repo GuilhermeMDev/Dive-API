@@ -15,7 +15,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna todos os registros da Tabela de Mergulho Não Descompressivo (JSON)
 
 ```http
-  GET /api/dive-table
+  GET https://dive.devi.tools/api/dive-table
 ```
 
 | Parâmetro   | Tipo       | Descrição                           |
@@ -25,7 +25,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna o registro de profundidade específica da Tabela de Mergulho Não Descompressivo, com base no Paramêtro passado na QueryString. (JSON)
 
 ```http
-  GET /api/no-descompressive-dive/?depth=(fsw)
+  GET https://dive.devi.tools/api/no-descompressive-dive/?depth=(fsw)
 ```
 
 | Parâmetro   | Tipo       | Descrição                           |
@@ -35,7 +35,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna o registro de profundidade específico da Tabela de Mergulho Não Descompressivo, com base nos Paramêtros passados na QueryString.
 
 ```http
-  GET /api/repetitive-group/?depth=(mins)&depthTime=(fsw)
+  GET https://dive.devi.tools/api/repetitive-group/?depth=(mins)&depthTime=(fsw)
 ```
 
 | Parâmetro   | Tipo       | Descrição                           |
@@ -45,7 +45,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna o Grupo Repetitivo inicial para calcular um mergulho sucessivo dentro de um range de tempo.
 
 ```http
-  GET /api/surface-interval/?lastLetter=(string)&intervalTime=(mins)
+  GET https://dive.devi.tools/api/surface-interval/?lastLetter=(string)&intervalTime=(mins)
 ```
 
 | Parâmetro                                 | Tipo       | Descrição                           |
@@ -55,7 +55,7 @@ As tabelas de descompressão são, fundamentalmente, tabelas de dupla entrada em
 #### Retorna o tempo de nitrogênio residual acumulado nos tecidos, obtido para subtrair do limite não descompressivo da profundidade alvo do mergulho sucessivo
 
 ```http
-  GET /api/successive-dive/?endGroup=(string)&successiveDepth=(fsw)
+  GET https://dive.devi.tools/api/successive-dive/?endGroup=(string)&successiveDepth=(fsw)
 ```
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
